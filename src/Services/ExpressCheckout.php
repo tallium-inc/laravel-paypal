@@ -26,7 +26,7 @@ class ExpressCheckout
      *
      * @return array
      */
-    public function setExpressCheckout($data, $subscription = false)
+    public function setExpressCheckout($data, $reference = false)
     {
         $num = 0;
         $post = [];
@@ -58,10 +58,10 @@ class ExpressCheckout
             'CANCELURL'                         => $data['cancel_url'],
         ];
 
-        if ($subscription) {
-            $post['L_BILLINGTYPE0'] = 'RecurringPayments';
-            $post['L_BILLINGAGREEMENTDESCRIPTION0'] = !empty($data['subscription_desc']) ?
-                $data['subscription_desc'] : $data['invoice_description'];
+        if ($reference) {
+            $post['L_BILLINGTYPE0'] = 'MerchantInitiatedBilling';
+            $post['L_BILLINGAGREEMENTDESCRIPTION0'] = !empty($data['reference_desc']) ?
+                $data['reference_desc'] : $data['invoice_description'];
         }
 
         if (!empty($this->config['locale'])) {
