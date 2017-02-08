@@ -151,6 +151,47 @@ class ExpressCheckout
     }
 
     /**
+     * @param $data
+     * @param $referenceId
+     * @return array
+     */
+    public function doReferenceTransaction($data, $referenceId)
+    {
+        $num = 0;
+        $post = [];
+
+        foreach ($data['items'] as $item) {
+            $tmp = [
+                'L_NAME'.$num  => $item['name'],
+                'L_AMT'.$num   => $item['price'],
+                'L_QTY'.$num   => $item['qty'],
+            ];
+
+            foreach ($tmp as $k => $v) {
+                $post[$k] = $v;
+            }
+
+            $num++;
+        }
+
+        $tmp     = [
+            'PAYMENTACTION' => 'Authorization',
+            'REFERENCEID'   => $referenceId,
+            'CURRENCYCODE'  => $this->currency,
+            'AMT'           => $data['total'],
+        ];
+
+        foreach ($tmp as $k => $v) {
+            $post[$k] = $v;
+        }
+
+
+        $response = $this->doPayPalRequest('DoReferenceTransaction', $post);
+
+        return $response;
+    }
+
+    /**
      * Function to perform DoCapture PayPal API operation.
      *
      * @param string $authorization_id Transaction ID
